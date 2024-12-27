@@ -21,7 +21,8 @@ local monoid_definition = {
     },
     volumetric_light = {
         strength = "max_1"
-    }
+    },
+    bloom = { intensity = "max_002" }
 }
 
 -- neutral values
@@ -43,7 +44,8 @@ local lighting_defaults = {
     },
     volumetric_light = {
         strength = 0
-    }
+    },
+    bloom = { intensity = 0.05 },
 }
 
 local methods = {}
@@ -62,6 +64,10 @@ end
 
 function methods.max_255(a, b)
     return math.min(math.max(math.max(a, b), 0), 255)
+end
+
+function methods.max_002(a, b)
+    return math.min(math.max(math.max(a, b), 0), 0.02)
 end
 
 -- combine tables using specified methods
@@ -103,6 +109,7 @@ lighting_monoid = player_monoids.make_monoid({
             -- restrict shadow intensity to valid range
             if value ~= nil and value.shadows ~= nil and value.shadows.intensity ~= nil then
                 value.shadows.intensity = math.max(math.min(value.shadows.intensity, 1), 0)
+                value.bloom.intensity = math.max(math.min(value.bloom.intensity, 0.1), 0)
             end
             player:set_lighting(value)
         end
@@ -118,7 +125,11 @@ if minetest.get_modpath("enable_shadows") then
 else
     -- set base shadow
     minetest.register_on_joinplayer(function(player)
-        local lighting = { shadows = { intensity = BASE_SHADOW_INTENSITY } }
+        local lighting = { shadows = { intensity = BASE_SHADOW_INTENSITY },
+            bloom = { intensity = 0.01 },
+			volumetric_light = { strength = 0.2 }
+        }
         lighting_monoid:add_change(player, lighting, "lighting_monoid:base_shadow")
+        
     end)
 end

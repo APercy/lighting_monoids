@@ -28,8 +28,8 @@ local function do_update()
             -- normalize in relation to default intensity
             lighting.shadows.intensity = lighting.shadows.intensity / BASE_SHADOW
         end
-        lighting.bloom = { intensity = 0.02 }
-        lighting.volumetric_light = { strength = 0.2 }
+        --lighting.bloom = { intensity = 0.02 }
+        --lighting.volumetric_light = { strength = 0.2 }
 
         lighting_monoid:add_change(player, lighting, "weather:lighting")
     end
